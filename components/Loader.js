@@ -1,9 +1,10 @@
 import React from 'react'
 import { RkText } from 'react-native-ui-kitten'
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, ActivityIndicator } from 'react-native'
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: '#2D142C',
 		height: '100%',
 		width: '100%',
 		alignItems: 'center',
@@ -18,11 +19,13 @@ const styles = StyleSheet.create({
 const Loader = (props) => {
 	return (
 		<View style={styles.container}>
-			<Image
-				style={styles.loader}
-				source={require('../assets/loader2.gif')}
-			/>
-			<RkText rkType="subtitle">Recherche en cours</RkText>
+			<ActivityIndicator size={200} color="white" />
+			<RkText
+				style={{ color: 'white', marginBottom: 40 }}
+				rkType="subtitle"
+			>
+				Recherche en cours
+			</RkText>
 			{props.children}
 		</View>
 	)

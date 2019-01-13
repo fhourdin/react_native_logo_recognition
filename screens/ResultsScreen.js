@@ -5,6 +5,14 @@ import { StyleSheet, Text, Image, View } from 'react-native'
 class ResultsScreen extends React.Component {
   state = { item: null }
 
+  static navigationOptions = {
+    title: 'Résultats',
+    headerStyle: {
+      backgroundColor: '#C72C41',
+    },
+    headerTintColor: '#fff',
+  }
+
   render() {
     const {
       navigation: {
@@ -24,11 +32,12 @@ class ResultsScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <RkCard>
+        <RkCard style={styles.card}>
           {params.item.title && (
             <View rkCardHeader>
-              <RkText rkType="header">
-                {params.item.title} (reconnu à {(params.score * 100).toFixed(2)}%)
+              <RkText rkType="header" style={{ color: 'white' }}>
+                {params.item.title} (reconnu à {(params.score * 100).toFixed(2)}
+                %)
               </RkText>
             </View>
           )}
@@ -45,12 +54,16 @@ class ResultsScreen extends React.Component {
 
           {params.item.description && (
             <View rkCardContent>
-              <RkText rkType="subtitle">{params.item.description}</RkText>
+              <RkText style={{ color: 'white' }} rkType="subtitle">
+                {params.item.description}
+              </RkText>
             </View>
           )}
           {params.item.extract && (
             <View rkCardFooter>
-              <RkText rkType="medium">{params.item.extract}</RkText>
+              <RkText style={{ color: 'white' }} rkType="medium">
+                {params.item.extract}
+              </RkText>
             </View>
           )}
         </RkCard>
@@ -62,9 +75,12 @@ class ResultsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#2D142C',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  card: {
+    backgroundColor: '#801336',
   },
 })
 

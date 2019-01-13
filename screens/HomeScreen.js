@@ -8,7 +8,7 @@ import Loader from '../components/Loader'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#2D142C',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -27,6 +27,10 @@ class HomeScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Reconnaissance de logo',
+    headerStyle: {
+      backgroundColor: '#C72C41',
+    },
+    headerTintColor: '#fff',
   }
 
   componentDidMount() {
@@ -84,7 +88,7 @@ class HomeScreen extends React.Component {
             return response.json()
           })
           .then((json) => {
-            console.log("DONE")
+            console.log('DONE')
             this.setState({ uploading: false })
             navigate('Results', {
               score: 0.678,
@@ -105,7 +109,7 @@ class HomeScreen extends React.Component {
         <Loader>
           <RkButton
             rkType="large"
-            style={{ marginTop: 30 }}
+            style={{ marginTop: 3, backgroundColor: '#EE4540' }}
             title="Annuler"
             onPress={() => this.setState({ cancelled: true })}
           >
@@ -116,16 +120,28 @@ class HomeScreen extends React.Component {
     }
     return (
       <View style={styles.container}>
+        <RkText
+          rkType="xxlarge"
+          style={{
+            color: 'white',
+            textAlign: 'center',
+            padding: 20,
+            marginBottom: 20,
+          }}
+        >
+          Pour commencer, choisissez une image
+        </RkText>
         <RkButton
-          rkType="xlarge"
+          style={{ backgroundColor: '#EE4540' }}
+          rkType="large"
           title="upload image"
           onPress={this._pickImage}
         >
           Utiliser une image existante
         </RkButton>
         <RkButton
-          style={{ marginTop: 20 }}
-          rkType="xlarge"
+          style={{ marginTop: 20, backgroundColor: '#EE4540' }}
+          rkType="large"
           title="upload image"
           onPress={this._takePhoto}
         >
