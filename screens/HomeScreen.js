@@ -72,31 +72,46 @@ class HomeScreen extends React.Component {
 
   handleImage = (result) => {
     const { navigate } = this.props.navigation
-
+    // fetch body: {image: result.base64}
     this.setState({ uploading: true })
-    delay(1000).then((res) => {
+    delay(10).then((res) => {
+      //get {Location: '/img_searches/:id'}
       const { cancelled } = this.state
 
       if (cancelled) {
         this.setState({ cancelled: false, uploading: false })
       } else {
-        return fetch(
-          'https://fr.wikipedia.org/w/api.php?action=query&format=json&exintro&exsentences=10&explaintext&prop=extracts|images|description&pageids=' +
-            '3098036'
-        )
-          .then((response) => {
-            return response.json()
+        // fetch http://85.152.106.82 + res.Location
+        return delay(10).then((res2) => {
+          const { cancelled } = this.state
+
+          if (cancelled) {
+            this.setState({ cancelled: false, uploading: false })
+          } else {
+          }
+
+          this.setState({ uploading: false })
+          return navigate('Results', {
+            results: [
+              {
+                image_url: 'https://via.placeholder.com/150',
+                score: 0.999,
+              },
+              {
+                image_url: 'https://via.placeholder.com/200',
+                score: 0.769,
+              },
+              {
+                image_url: 'https://via.placeholder.com/50',
+                score: 0.23,
+              },
+              {
+                image_url: 'https://via.placeholder.com/300',
+                score: 0.043,
+              },
+            ],
           })
-          .then((json) => {
-            console.log('DONE')
-            this.setState({ uploading: false })
-            navigate('Results', {
-              score: 0.678,
-              wiki_id: '3098036',
-              uri: result.uri,
-              item: json.query.pages[Object.keys(json.query.pages)[0]],
-            })
-          })
+        })
       }
     })
   }

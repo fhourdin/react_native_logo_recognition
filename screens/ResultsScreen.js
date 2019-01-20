@@ -1,6 +1,6 @@
 import React from 'react'
 import { RkCard, RkText } from 'react-native-ui-kitten'
-import { StyleSheet, Text, Image, View } from 'react-native'
+import { StyleSheet, Text, Image, View, FlatList } from 'react-native'
 
 class ResultsScreen extends React.Component {
   state = { item: null }
@@ -13,14 +13,35 @@ class ResultsScreen extends React.Component {
     headerTintColor: '#fff',
   }
 
+  renderItem = ({ item }) => {
+    console.log(item)
+    return (
+      <RkCard style={styles.card}>
+        <View rkCardHeader>
+          <RkText rkType="header" style={{ color: 'white' }}>
+            Score : {(item.score * 100).toFixed(2)}%
+          </RkText>
+        </View>
+        <Image
+          rkCardImg
+          source={{
+            uri: item.image_url,
+          }}
+        />
+      </RkCard>
+    )
+  }
+
   render() {
     const {
       navigation: {
-        state: { params },
+        state: {
+          params: { results },
+        },
       },
     } = this.props
 
-    if (!params.wiki_id) {
+    if (!results || results.length === 0) {
       return (
         <View style={styles.container}>
           <RkCard>
@@ -32,41 +53,11 @@ class ResultsScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <RkCard style={styles.card}>
-          {params.item.title && (
-            <View rkCardHeader>
-              <RkText rkType="header" style={{ color: 'white' }}>
-                {params.item.title} (reconnu à {(params.score * 100).toFixed(2)}
-                %)
-              </RkText>
-            </View>
-          )}
-          {params.item.images.length && (
-            <Image
-              rkCardImg
-              source={{
-                uri:
-                  'https://commons.wikimedia.org/wiki/Special:FilePath/' +
-                  params.item.images[0].title.split(':')[1],
-              }}
-            />
-          )}
-
-          {params.item.description && (
-            <View rkCardContent>
-              <RkText style={{ color: 'white' }} rkType="subtitle">
-                {params.item.description}
-              </RkText>
-            </View>
-          )}
-          {params.item.extract && (
-            <View rkCardFooter>
-              <RkText style={{ color: 'white' }} rkType="medium">
-                {params.item.extract}
-              </RkText>
-            </View>
-          )}
-        </RkCard>
+        <FlatList
+          data={results}
+          renderItem={this.renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
     )
   }
@@ -74,12 +65,10 @@ class ResultsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#2D142C',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   card: {
+    marginTop: 10,
     backgroundColor: '#801336',
   },
 })
