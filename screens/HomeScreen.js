@@ -1,7 +1,7 @@
 import React from 'react'
 import { RkButton, RkText } from 'react-native-ui-kitten'
 import { View, StyleSheet, Image } from 'react-native'
-import { ImagePicker } from 'expo'
+import { ImagePicker, ImageManipulator } from 'expo'
 import 'whatwg-fetch'
 import Loader from '../components/Loader'
 
@@ -53,9 +53,27 @@ class HomeScreen extends React.Component {
       base64: true,
     })
 
-    if (!result.cancelled) {
-      this.handleImage(result)
+    if (result.cancelled) {
+      return
     }
+
+    this._resize(result).then((res) => {
+      this.handleImage(res)
+    })
+  }
+
+  _resize = async (result) => {
+    const optimizedResult = await ImageManipulator.manipulateAsync(
+      result.uri,
+      [{ resize: { width: 300 } }],
+      { base64: true }
+    )
+
+    if (optimizedResult.cancelled) {
+      return
+    }
+
+    return optimizedResult
   }
 
   _takePhoto = async () => {
@@ -65,60 +83,61 @@ class HomeScreen extends React.Component {
       base64: true,
     })
 
-    if (!result.cancelled) {
-      this.handleImage(result)
+    if (result.cancelled) {
+      return
     }
+    this._resize(result).then((res) => {
+      this.handleImage(res)
+    })
   }
 
   handleImage = (result) => {
     const { navigate } = this.props.navigation
-    // fetch body: {image: result.base64}
+
     this.setState({ uploading: true })
-    delay(10).then((res) => {
-      //get {Location: '/img_searches/:id'}
-      const { cancelled } = this.state
 
-      if (cancelled) {
-        this.setState({ cancelled: false, uploading: false })
-      } else {
-        // fetch http://85.152.106.82 + res.Location
-        return delay(10).then((res2) => {
-          const { cancelled } = this.state
-
-          if (cancelled) {
-            this.setState({ cancelled: false, uploading: false })
-          } else {
-          }
-
-          this.setState({ uploading: false })
-          return navigate('Results', {
-            results: [
-              {
-                image_url: 'https://via.placeholder.com/150',
-                score: 0.999,
-              },
-              {
-                image_url: 'https://via.placeholder.com/200',
-                score: 0.769,
-              },
-              {
-                image_url: 'https://via.placeholder.com/50',
-                score: 0.23,
-              },
-              {
-                image_url: 'https://via.placeholder.com/300',
-                score: 0.043,
-              },
-            ],
-          })
-        })
-      }
+    fetch('http://83.152.106.82:8585/img_searches', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        base64: 'data:image/jpeg;base64,' + result.base64,
+      }),
     })
+      .then((res1) => {
+        return res1.json()
+      })
+      .then((json1) => {
+        const { cancelled } = this.state
+        if (cancelled) {
+          this.setState({ cancelled: false, uploading: false })
+        } else {
+          fetch('http://83.152.106.82:8585' + json1.Location, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((res2) => {
+              return res2.json()
+            })
+            .then((json2) => {
+              const { cancelled } = this.state
+
+              if (cancelled) {
+                this.setState({ cancelled: false, uploading: false })
+              } else {
+              }
+
+              this.setState({ uploading: false })
+              return navigate('Results', json2)
+            })
+        }
+      })
   }
 
   render() {
     const { uploading } = this.state
-
     if (uploading) {
       return (
         <Loader>

@@ -14,7 +14,6 @@ class ResultsScreen extends React.Component {
   }
 
   renderItem = ({ item }) => {
-    console.log(item)
     return (
       <RkCard style={styles.card}>
         <View rkCardHeader>
