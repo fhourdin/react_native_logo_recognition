@@ -5,6 +5,10 @@ import { ImagePicker, ImageManipulator } from 'expo'
 import 'whatwg-fetch'
 import Loader from '../components/Loader'
 
+//const SERVER_URL = '83.152.106.82:8585'
+const SERVER_URL = '192.168.43.17:8000'
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -96,7 +100,7 @@ class HomeScreen extends React.Component {
 
     this.setState({ uploading: true })
 
-    fetch('http://83.152.106.82:8585/img_searches', {
+    fetch('http://'+ SERVER_URL +'/img_searches', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -113,7 +117,7 @@ class HomeScreen extends React.Component {
         if (cancelled) {
           this.setState({ cancelled: false, uploading: false })
         } else {
-          fetch('http://83.152.106.82:8585' + json1.Location, {
+          fetch('http://' + SERVER_URL + json1.Location, {
             headers: {
               'Content-Type': 'application/json',
             },
